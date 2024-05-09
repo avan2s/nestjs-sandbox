@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class ServiceA2Service {}
+export class ServiceA2ServiceImpl {
+    public foo() {
+    }
+}
