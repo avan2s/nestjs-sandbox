@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
+import { tokenCalculator } from 'src/module-b/module-b.module';
+import { AbstractServiceA2 } from './abstracts/abstract-service-a2';
+import { ServiceA2Token } from './interfaces';
 import { ServiceA1Service } from './services/service-a1/service-a1.service';
 import {
   ServiceA2ServiceImpl,
   ServiceA2ServiceImpl2,
   ServiceA2ServiceImpl3,
 } from './services/service-a2/service-a2.service';
-import { ServiceA2Token } from './interfaces';
-import { AbstractServiceA2 } from './abstracts/abstract-service-a2';
 import { Person } from './types';
-import { ModuleRef } from '@nestjs/core';
+import { Calculator } from 'src/module-b/interfaces';
 
 @Module({
   providers: [
@@ -35,7 +37,15 @@ import { ModuleRef } from '@nestjs/core';
       provide: 'Persons',
       useFactory(moduleRef: ModuleRef) {
         const abstr = moduleRef.get(AbstractServiceA2);
-        const result = abstr.abstractMethod1(20);
+        const calcultorFromOtherModule = moduleRef.get<Calculator>(
+          tokenCalculator,
+          {
+            strict: false,
+          },
+        );
+        const result = abstr.abstractMethod1(
+          calcultorFromOtherModule.add(2, 3),
+        );
         return result;
       },
       inject: [ModuleRef],
