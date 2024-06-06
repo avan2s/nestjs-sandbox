@@ -1,4 +1,4 @@
 import { AnimalProvider } from '../decorators/animal-provider.decorator';
 
-@AnimalProvider({ name: 'animal' })
+@AnimalProvider({ name: 'dog' })
 export class DogService {}

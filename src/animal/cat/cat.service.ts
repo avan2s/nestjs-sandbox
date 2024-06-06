@@ -1,4 +1,4 @@
 import { AnimalProvider } from '../decorators/animal-provider.decorator';
-console.log(AnimalProvider.KEY);
-@AnimalProvider({ name: 'animal' })
+
+@AnimalProvider({ name: 'cat' })
 export class CatService {}
