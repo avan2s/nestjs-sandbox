@@ -8,13 +8,7 @@ import { ExplorerService } from './explorer.service';
   imports: [DiscoveryModule],
   providers: [
     ExplorerService,
-    {
-      provide: AnimalProvider,
-      useFactory(serviceDiscoveryService: ServiceDiscoveryService) {
-        return serviceDiscoveryService.getServiceInstances(AnimalProvider);
-      },
-      inject: [ServiceDiscoveryService],
-    },
+    ServiceDiscoveryService.getProviderListFor(AnimalProvider),
   ],
 })
 export class ExplorerModule {}
