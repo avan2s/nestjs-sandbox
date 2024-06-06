@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { DiscoveryModule, DiscoveryService } from '@nestjs/core';
-import { ExplorerService } from './explorer.service';
+import { DiscoveryModule } from '@nestjs/core';
 import { AnimalProvider } from 'src/animal/decorators/animal-provider.decorator';
+import { ServiceDiscoveryService } from 'src/service-discovery/service-discovery/service-discovery.service';
+import { ExplorerService } from './explorer.service';
 
 @Module({
   imports: [DiscoveryModule],
@@ -9,23 +10,10 @@ import { AnimalProvider } from 'src/animal/decorators/animal-provider.decorator'
     ExplorerService,
     {
       provide: AnimalProvider,
-      useFactory(discoveryService: DiscoveryService) {
-        return discoveryService
-          .getProviders({
-            metadataKey: AnimalProvider.KEY,
-          })
-          .filter((p) => {
-            const x = discoveryService.getMetadataByDecorator(
-              AnimalProvider,
-              p,
-            );
-            // receive the metadata
-            console.log(x?.name);
-            return true;
-          })
-          .map((p) => p.instance);
+      useFactory(serviceDiscoveryService: ServiceDiscoveryService) {
+        return serviceDiscoveryService.getServiceInstances(AnimalProvider);
       },
-      inject: [DiscoveryService],
+      inject: [ServiceDiscoveryService],
     },
   ],
 })
