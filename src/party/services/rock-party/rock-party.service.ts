@@ -3,7 +3,7 @@ import { PartyService } from 'src/party/abstracts/party.service';
 import { PartyProvider } from 'src/party/decorators/party-provider.decorator';
 
 @Injectable()
-@PartyProvider()
+@PartyProvider({ size: 'big' })
 export class RockPartyService extends PartyService {
   public celebrate(): void {
     console.log("Rock'n Roll!");
