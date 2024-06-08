@@ -1,3 +1,3 @@
 export abstract class AnimalService {
-  abstract makeSound(): void;
+  public abstract makeSound(): void;
 }

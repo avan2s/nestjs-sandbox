@@ -10,6 +10,7 @@ export class ExplorerService {
     console.log(this.animals.length);
     this.animals.forEach((animal) => {
       console.log(`Discovered provider: ${animal.constructor.name}`);
+      animal.makeSound();
     });
   }
 }
