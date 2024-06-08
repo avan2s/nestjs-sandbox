@@ -1,9 +1,9 @@
-import { Provider } from '@nestjs/common';
+import { InjectionToken, Provider } from '@nestjs/common';
 import { DiscoverableDecorator, DiscoveryService } from '@nestjs/core';
 import { ServiceDiscoveryService } from './service-discovery/service-discovery.service';
 
 type ExtendedDiscoverableDecorator<T> = DiscoverableDecorator<T> & {
-  TOKEN_LIST: () => string;
+  TOKEN_LIST: () => InjectionToken;
 
   forList: <F extends object | never>(
     filterFn?: (params: Partial<F>) => boolean,
@@ -16,7 +16,7 @@ export function createExtendedDecorator<T>(
   const baseDecorator = DiscoveryService.createDecorator<
     T & { _abstractName: string }
   >() as ExtendedDiscoverableDecorator<T>;
-  baseDecorator.TOKEN_LIST = () => `${abstractName}_LIST`;
+  baseDecorator.TOKEN_LIST = () => Symbol(`${abstractName}_LIST`);
 
   baseDecorator.forList = <F extends object | never>(
     filterFn?: (params: Partial<F>) => boolean,
