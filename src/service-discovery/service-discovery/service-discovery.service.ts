@@ -5,7 +5,7 @@ import { DiscoverableDecorator, DiscoveryService } from '@nestjs/core';
 export class ServiceDiscoveryService {
   constructor(private readonly discoveryService: DiscoveryService) {}
 
-  public getServiceInstances<F extends object | never>(
+  public getProviderInstances<F extends object | never>(
     decorator: DiscoverableDecorator<F>,
     filterFn: (params: Partial<F>) => boolean = () => true,
   ) {
@@ -14,7 +14,6 @@ export class ServiceDiscoveryService {
         const serviceParams: F | undefined =
           this.discoveryService.getMetadataByDecorator(decorator, p);
 
-        console.log(p.scope);
         if (!serviceParams) {
           return filterFn({});
         }
