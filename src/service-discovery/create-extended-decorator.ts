@@ -31,6 +31,28 @@ type DiscoverableServiceDecorator<T extends object | never> =
  * Creates a decorator that can be used to decorate service implementations with metadata.
  * The decorator will also add the class to the collection of discoverable classes (by metadata key).
  * Decorated classes can be discovered using the `getProviders` and `getControllers` methods.
+ * In the provider section, you can additionally use the `forList` method in order to add explorer.
+ *
+ * ```ts
+ * export const AnimalProvider = createServiceDecorator<{
+ *  size: 'big' | 'small';
+ * }>(AbstractParty.name);
+ *
+ * import { Module } from '@nestjs/common';
+ * import { DiscoveryModule } from 'your-discovery-module';
+ *
+ * @Module({
+ *   imports: [DiscoveryModule],
+ *   providers: [
+ *     AnimalProvider.forList(),
+ *     AnimalProvider.forList(
+ *       'bigAnimals',
+ *       (serviceParams) => serviceParams.size === 'big',
+ *     ),
+ *   ],
+ * })
+ * export class ExplorerModule {}
+ * ```
  * @param displayName the name of the abstraction. It will be used i.e to provider better info and error diagnostic messages
  * @returns the decorator function
  */
