@@ -9,8 +9,12 @@ import { PartyProvider } from 'src/party/decorators/party-provider.decorator';
   imports: [DiscoveryModule],
   providers: [
     ExplorerService,
-    DisvoceredProvider.list(AnimalProvider),
-    PartyProvider.forList(),
+    DisvoceredProvider.forList(
+      AnimalProvider,
+      AnimalProvider,
+      (serviceParams) => !!serviceParams.name,
+    ),
+    PartyProvider.forList((params) => !!params.size),
   ],
 })
 export class ExplorerModule {}

@@ -10,12 +10,13 @@ export class ExplorerService {
     @Inject(AnimalProvider) private readonly animals: AnimalService[],
     @Inject(PartyProvider.TOKEN_LIST) private readonly parties: PartyService[],
   ) {
-    console.log(this.animals.length);
+    console.log(`found ${this.animals.length} animals`);
     this.animals.forEach((animal) => {
       console.log(`Discovered provider: ${animal.constructor.name}`);
       animal.makeSound();
     });
 
+    console.log(`\nfound ${this.parties.length} parties`);
     this.parties.forEach((party) => {
       party.celebrate();
     });

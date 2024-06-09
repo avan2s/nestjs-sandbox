@@ -1,14 +1,15 @@
-import { Provider } from '@nestjs/common';
+import { InjectionToken, Provider } from '@nestjs/common';
 import { DiscoverableDecorator } from '@nestjs/core';
 import { ServiceDiscoveryService } from './service-discovery/service-discovery.service';
 
-export const DisvoceredProvider = {
-  single: <F extends object | never>(
+export class DisvoceredProvider {
+  public static forSingle<F extends object | never>(
     provider: DiscoverableDecorator<F>,
+    token: InjectionToken = provider,
     filterFn: (params: Partial<F>) => boolean = () => true,
-  ): Provider => {
+  ): Provider {
     return {
-      provide: provider,
+      provide: token,
       useFactory(serviceDiscoveryService: ServiceDiscoveryService) {
         const instances = serviceDiscoveryService.getProviderInstances(
           provider,
@@ -24,19 +25,22 @@ export const DisvoceredProvider = {
       },
       inject: [ServiceDiscoveryService],
     };
-  },
+  }
 
-  list: <F extends object | never>(
+  public static forList<F extends object | never>(
     provider: DiscoverableDecorator<F>,
+    token: InjectionToken = provider,
     filterFn: (params: Partial<F>) => boolean = () => true,
-  ): Provider => ({
-    provide: provider,
-    useFactory(serviceDiscoveryService: ServiceDiscoveryService) {
-      return serviceDiscoveryService.getProviderInstances(provider, filterFn);
-    },
-    inject: [ServiceDiscoveryService],
-  }),
-};
+  ): Provider {
+    return {
+      provide: token,
+      useFactory(serviceDiscoveryService: ServiceDiscoveryService) {
+        return serviceDiscoveryService.getProviderInstances(provider, filterFn);
+      },
+      inject: [ServiceDiscoveryService],
+    };
+  }
+}
 
 // interface ExtendedDecorator<F extends object | never>
 //   extends DiscoverableDecorator<F> {

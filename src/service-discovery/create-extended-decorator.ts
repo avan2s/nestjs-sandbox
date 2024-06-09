@@ -2,33 +2,26 @@ import { InjectionToken, Provider } from '@nestjs/common';
 import { DiscoverableDecorator, DiscoveryService } from '@nestjs/core';
 import { ServiceDiscoveryService } from './service-discovery/service-discovery.service';
 
-type ExtendedDiscoverableDecorator<T> = DiscoverableDecorator<T> & {
-  TOKEN_LIST: () => InjectionToken;
+type ExtendedDiscoverableDecorator<T extends object | never> =
+  DiscoverableDecorator<T> & {
+    TOKEN_LIST: () => InjectionToken;
+    forList: (filterFn?: (params: Partial<T>) => boolean) => Provider;
+  };
 
-  forList: <F extends object | never>(
-    filterFn?: (params: Partial<F>) => boolean,
-  ) => Provider;
-};
-
-export function createExtendedDecorator<T>(
-  abstractName: string,
-): ExtendedDiscoverableDecorator<T> {
-  const baseDecorator = DiscoveryService.createDecorator<
-    T & { _abstractName: string }
-  >() as ExtendedDiscoverableDecorator<T>;
-  baseDecorator.TOKEN_LIST = () => Symbol(`${abstractName}_LIST`);
-
-  baseDecorator.forList = <F extends object | never>(
-    filterFn?: (params: Partial<F>) => boolean,
+export function createExtendedDecorator<
+  T extends object | never,
+>(): ExtendedDiscoverableDecorator<T> {
+  const decorator =
+    DiscoveryService.createDecorator<T>() as ExtendedDiscoverableDecorator<T>;
+  decorator.TOKEN_LIST = () => Symbol(`${decorator.KEY}_LIST`);
+  decorator.forList = (
+    filterFn: (params: Partial<T>) => boolean = () => true,
   ) => ({
-    provide: baseDecorator.TOKEN_LIST,
+    provide: decorator.TOKEN_LIST,
     useFactory(serviceDiscoveryService: ServiceDiscoveryService) {
-      return serviceDiscoveryService.getProviderInstances(
-        baseDecorator as DiscoverableDecorator<F>,
-        filterFn,
-      );
+      return serviceDiscoveryService.getProviderInstances(decorator, filterFn);
     },
     inject: [ServiceDiscoveryService],
   });
-  return baseDecorator;
+  return decorator;
 }

@@ -6,6 +6,6 @@ import { PartyProvider } from 'src/party/decorators/party-provider.decorator';
 @PartyProvider({ size: 'big' })
 export class RockPartyService extends PartyService {
   public celebrate(): void {
-    console.log("Rock'n Roll!");
+    console.log('Rock show yeah!');
   }
 }
