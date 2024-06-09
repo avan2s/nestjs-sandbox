@@ -7,6 +7,7 @@ import { ModuleAModule } from './module-a/module-a.module';
 import { ModuleBModule } from './module-b/module-b.module';
 import { ExplorerModule } from './explorer/explorer.module';
 import { ServiceDiscoveryModule } from './service-discovery/service-discovery.module';
+import { PartyModule } from './party/party.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ServiceDiscoveryModule } from './service-discovery/service-discovery.mo
     DiscoveryModule,
     ExplorerModule,
     ServiceDiscoveryModule,
+    PartyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
