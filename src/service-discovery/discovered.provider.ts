@@ -1,6 +1,6 @@
 import { InjectionToken, Provider } from '@nestjs/common';
 import { DiscoverableDecorator } from '@nestjs/core';
-import { ServiceDiscoveryService } from './service-discovery/service-discovery.service';
+import { ServiceDiscoveryService } from './service-discovery';
 
 export class DisvoceredProvider {
   public static forSingle<F extends object | never>(
