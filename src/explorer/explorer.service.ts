@@ -7,8 +7,11 @@ import { PartyProvider } from 'src/party/decorators/party-provider.decorator';
 @Injectable()
 export class ExplorerService {
   constructor(
-    @Inject(AnimalProvider) private readonly animals: AnimalService[],
-    @Inject(PartyProvider.TOKEN_LIST) private readonly parties: PartyService[],
+    @Inject(AnimalProvider.name + 'list')
+    private readonly animals: AnimalService[],
+    @Inject(PartyProvider.TOKEN_ALL) private readonly parties: PartyService[],
+    @Inject('bigParties') private readonly bigParties: PartyService[],
+    // private readonly serviceDiscovery: ServiceDiscoveryService,
   ) {
     console.log(`found ${this.animals.length} animals`);
     this.animals.forEach((animal) => {
@@ -18,6 +21,11 @@ export class ExplorerService {
 
     console.log(`\nfound ${this.parties.length} parties`);
     this.parties.forEach((party) => {
+      party.celebrate();
+    });
+
+    console.log(`\nfound ${this.parties.length} big parties`);
+    this.bigParties.forEach((party) => {
       party.celebrate();
     });
   }

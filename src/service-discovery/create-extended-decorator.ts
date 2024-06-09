@@ -2,22 +2,50 @@ import { InjectionToken, Provider } from '@nestjs/common';
 import { DiscoverableDecorator, DiscoveryService } from '@nestjs/core';
 import { ServiceDiscoveryService } from './service-discovery/service-discovery.service';
 
-type ExtendedDiscoverableDecorator<T extends object | never> =
+type DiscoverableServiceDecorator<T extends object | never> =
   DiscoverableDecorator<T> & {
-    TOKEN_LIST: () => InjectionToken;
-    forList: (filterFn?: (params: Partial<T>) => boolean) => Provider;
+    /**
+     * displayName for the implementation
+     */
+    displayName: string;
+
+    /**
+     * the injection token which can be used in order to inject a list of all implementations into a list of abstractions
+     */
+    TOKEN_ALL: InjectionToken;
+
+    /**
+     * @param token an injection token, which can be used in the constructor with `@Inject(<token>)` annotation.
+     * If no token is set, the token will be used for getting the list of all service implementations. If you
+     * want to filter the list with service parameters you have to define your own injection token
+     * @param filterFn an optional filter function in order to filter services by their service parameters
+     * @returns a provider for a module definition.
+     */
+    forList: (
+      token?: InjectionToken,
+      filterFn?: (params: Partial<T>) => boolean,
+    ) => Provider;
   };
 
-export function createExtendedDecorator<
-  T extends object | never,
->(): ExtendedDiscoverableDecorator<T> {
+/**
+ * Creates a decorator that can be used to decorate service implementations with metadata.
+ * The decorator will also add the class to the collection of discoverable classes (by metadata key).
+ * Decorated classes can be discovered using the `getProviders` and `getControllers` methods.
+ * @param displayName the name of the abstraction. It will be used i.e to provider better info and error diagnostic messages
+ * @returns the decorator function
+ */
+export function createServiceDecorator<T extends object | never>(
+  displayName: Readonly<string>,
+): DiscoverableServiceDecorator<T> {
   const decorator =
-    DiscoveryService.createDecorator<T>() as ExtendedDiscoverableDecorator<T>;
-  decorator.TOKEN_LIST = () => Symbol(`${decorator.KEY}_LIST`);
+    DiscoveryService.createDecorator<T>() as DiscoverableServiceDecorator<T>;
+  decorator.displayName = displayName;
+  decorator.TOKEN_ALL = Symbol(`${decorator.displayName}_${decorator.KEY}_all`);
   decorator.forList = (
+    token: InjectionToken = decorator.TOKEN_ALL,
     filterFn: (params: Partial<T>) => boolean = () => true,
   ) => ({
-    provide: decorator.TOKEN_LIST,
+    provide: token,
     useFactory(serviceDiscoveryService: ServiceDiscoveryService) {
       return serviceDiscoveryService.getProviderInstances(decorator, filterFn);
     },

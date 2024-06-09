@@ -11,10 +11,14 @@ import { PartyProvider } from 'src/party/decorators/party-provider.decorator';
     ExplorerService,
     DisvoceredProvider.forList(
       AnimalProvider,
-      AnimalProvider,
+      AnimalProvider.name + 'list',
       (serviceParams) => !!serviceParams.name,
     ),
-    PartyProvider.forList((params) => !!params.size),
+    PartyProvider.forList(),
+    PartyProvider.forList(
+      'bigParties',
+      (serviceParams) => serviceParams.size === 'big',
+    ),
   ],
 })
 export class ExplorerModule {}
